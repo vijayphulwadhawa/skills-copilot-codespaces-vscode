@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>External Web App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        #message {
+            margin: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+        }
+        button {
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>External Web App</h1>
+    <p>This is a simple app to mimic communication with Salesforce LWC.</p>
+    <div id="message">
+        <strong>Message from Salesforce:</strong>
+        <p id="receivedMessage">No messages received yet.</p>
+    </div>
+    <button onclick="sendMessageToSalesforce()">Send Message to Salesforce</button>
+
+    <script>
+        // Function to send a message to Salesforce iframe
+        function sendMessageToSalesforce() {
+            const message = {
+                source: 'externalApp',
+                content: 'Hello from the External Web App!'
+            };
+
+            // Send message to parent (Salesforce LWC iframe container)
+            window.parent.postMessage(message, '*');
+            alert('Message sent to Salesforce: ' + message.content);
+        }
+
+        // Listen for messages from Salesforce
+        window.addEventListener('message', (event) => {
+            // You can add domain validation if needed:
+            // if (event.origin !== 'https://your-salesforce-instance.com') return;
+
+            const data = event.data;
+            if (data && data.source === 'iframe') {
+                document.getElementById('receivedMessage').innerText = data.content;
+            }
+        });
+    </script>
+</body>
+</html>
